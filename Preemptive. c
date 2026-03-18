@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <string.h>
+#define MAX 50
+int main() {
+ int n;
+ char pid[MAX][10];
+ int at[MAX], bt[MAX], pr[MAX];
+ int rt[MAX]; // remaining time
+ int ct[MAX], wt[MAX], tat[MAX];
+ int time = 0, completed = 0;
+ int index = -1, max_pr;
+ printf("Enter number of processes:\n");
+ scanf("%d", &n);
+ printf("Enter PID AT BT PR:\n");
+ for(int i = 0; i < n; i++) {
+ scanf("%s %d %d %d", pid[i], &at[i], &bt[i], &pr[i]);
+ rt[i] = bt[i];
+ }
+ while(completed < n) {
+ index = -1;
+ max_pr = -1;
+ // Select process
+ for(int i = 0; i < n; i++) {
+ if(at[i] <= time && rt[i] > 0) {
+ if(pr[i] > max_pr) {
+ max_pr = pr[i];
+ index = i;
+ }
+ else if(pr[i] == max_pr) {
+// Tie-breaking: earlier arrival first
+
+ if(at[i] < at[index]) {
+
+ index = i;
+
+ }
+
+ }
+
+ }
+
+ }
+
+ if(index != -1) {
+
+ rt[index]--;
+
+ time++;
+
+ if(rt[index] == 0) {
+
+ completed++;
+
+ ct[index] = time;
+
+ tat[index] = ct[index] - at[index];
+
+ wt[index] = tat[index] - bt[index];
+
+ }
+
+ } else {
+
+ time++; // CPU idle
+
+ }
+
+ }
+
+ float total_wt = 0, total_tat = 0;
+
+ printf("\nWaiting Time:\n");
+
+ for(int i = 0; i < n; i++) {
+
+ printf("%s %d\n", pid[i], wt[i]);
+
+ total_wt += wt[i];
+
+ }
+
+ printf("\nTurnaround Time:\n");
+
+ for(int i = 0; i < n; i++) {
+
+ printf("%s %d\n", pid[i], tat[i]);
+
+ total_tat += tat[i];
+return 0;
+
+}
+
+ }
+
+ printf("\nAverage Waiting Time: %.2f\n", total_wt / n);
+
+ printf("Average Turnaround Time: %.2f\n", total_tat / n);
